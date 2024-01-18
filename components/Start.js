@@ -11,7 +11,7 @@ import {
 
 const bgImage = require("../img/bg-image.png");
 
-const Screen1 = ({ navigation }) => {
+const Start = ({ navigation }) => {
   const [name, setName] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
@@ -62,7 +62,7 @@ const Screen1 = ({ navigation }) => {
         <TouchableOpacity
           style={styles.chatButton}
           onPress={() =>
-            navigation.navigate("Screen2", {
+            navigation.navigate("Chat", {
               name: name,
               color: selectedColor,
             })
@@ -150,4 +150,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Screen1;
+export default Start;
