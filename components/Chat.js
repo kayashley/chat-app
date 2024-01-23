@@ -2,51 +2,46 @@
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
 import { StyleSheet, KeyboardAvoidingView, Platform, View } from "react-native";
 import { useEffect, useState } from "react";
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 
-const Chat = ({ route, navigation }) => {
-  const { name } = route.params;
-  const { color } = route.params;
-
-  // messages
+const Chat = ({ route, navigation, db }) => {
+  const { name, backgroundColor, id } = route.params;
   const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    navigation.setOptions({ title: name });
-    setMessages([
-      // static message
-      {
-        _id: 1,
-        text: "Hello Developer",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "React Native",
-          avatar: "https://placeimg.com/140/140/any",
-        },
-      },
-      // system message
-      {
-        _id: 2,
-        text: "This is a system message",
-        createdAt: new Date(),
-        system: true,
-      },
-      // user message
-      {
-        _id: 3,
-        text: "You joined the chat",
-        createdAt: new Date(),
-        system: true,
-      },
-    ]);
-  }, []);
 
   // sending messages, old messages will stay displayed
   const onSend = (newMessages) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, newMessages)
-    );
+    addDoc(collection(db, "messages"), newMessages[0]);
   };
+
+  let unsubMessages;
+
+  useEffect(() => {
+    navigation.setOptions({ title: name });
+
+    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+    unsubMessages = onSnapshot(q, (documentSnapshot) => {
+      let newMessages = [];
+      documentSnapshot.forEach((doc) => {
+        newMessages.push({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: new Date(doc.data().createdAt.toMillis()),
+        });
+        setMessages(newMessages);
+      });
+
+      return () => {
+        if (unsubMessages) unsubMessages();
+        unsubMessages = null;
+      };
+    });
+  }, []);
 
   // color of the message bubbles
   const renderBubble = (props) => {
@@ -66,13 +61,14 @@ const Chat = ({ route, navigation }) => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: color }]}>
+    <View style={[styles.container, { backgroundColor: backgroundColor }]}>
       <GiftedChat
         messages={messages}
         renderBubble={renderBubble}
         onSend={(messages) => onSend(messages)}
         user={{
-          _id: 1,
+          _id: id,
+          name: name,
         }}
       />
 
