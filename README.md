@@ -8,11 +8,17 @@ An app created using React Native to chat with other users.
 
 - Run command: "expo start" or "npm start"
 
-## Technologies used
+## Dependencies
 
 - React Native
+- React Navigation
+- React Gifted Chat
 - Expo
+- Expo Image Picker
+- Expo Location
+- Expo Asyn Storage
 - Android Studio
+- Firebase / Firebase Storage
 
 ## Key Features
 
@@ -26,6 +32,7 @@ An app created using React Native to chat with other users.
 
 1. Clone this GitHhub repo
 2. Run npm install
-3. Download the Expo Go App on your phone, or use an Android emulator to test the app
-4. Open in your code editor and run the command: "npm start" or "expo start"
-5. Android emulator will install Expo Go and the chat app will appear for testing
+3. Install Expo globally npm install -g expo-cli
+4. Download the Expo Go App on your phone, or use an Android emulator to test the app
+5. Open in your code editor and run the command: "npm start" or "expo start"
+6. Android emulator will install Expo Go and the chat app will appear for testing
